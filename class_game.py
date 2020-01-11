@@ -10,13 +10,11 @@ class Game():
         self.o_centers=[]
         self.x_centers=[]
         self.starterplayer = "o"
-
-        #self.o()
         self.text = None
         self.defeat=bool
         self.player_o = 0
         self.player_x = 0
-
+        self.player = 1
         self.starter()
     def starter(self):
         surrounding_l = Rectangle(Point(20, 250), Point(180, 20))
@@ -32,7 +30,7 @@ class Game():
             self.draw_text("Player X", 35, "white", 900, 100)
             self.draw_text(str(self.player_o), 30, "white", 100, 200)
             self.draw_text(str(self.player_x), 30, "white", 900, 200)
-            self.o()
+            self.o_x(1)
         else:
             self.starterplayer = "o"
             surrounding_l.setFill(color_rgb(200, 60, 30))
@@ -44,7 +42,7 @@ class Game():
             self.draw_text("Player X", 35, "white", 900, 100)
             self.draw_text(str(self.player_o), 30, "white", 100, 200)
             self.draw_text(str(self.player_x), 30, "white", 900, 200)
-            self.x()
+            self.o_x(0)
     def draw_text(self,text, size, color,x,y):
         t = Text(Point(x, y), text)
         t.setSize(size)
@@ -65,40 +63,26 @@ class Game():
                 self.box_centers.append(box.getCenter())
                 box.draw(self.win)
 
-    def x(self):
+    def o_x(self,n):
         drawn=False
         clickpoint = self.win.getMouse()
         for i in self.box_centers:
             if clickpoint.getY() < i.getY() + 50 and clickpoint.getX() < i.getX() + 50 and clickpoint.getY() > i.getY() - 50 and clickpoint.getX() > i.getX() - 50:
-                    text = Visual(i.getX(), i.getY()).x_text
-                    self.box_centers.remove(i)
-                    self.x_centers.append(text.getAnchor())
-                    text.setSize(35)
-                    text.setFill('white')
-                    text.draw(self.win)
-                    self.checker()
-                    drawn=True
+                self.box_centers.remove(i)
+                if n == 0:
+                    n += 1
+                    self.draw_text("X", 35, "white", i.getX(), i.getY())
+                    self.x_centers.append(Point(i.getX(), i.getY()))
+                else:
+                    n += 1
+                    self.draw_text("O", 35, "white", i.getX(), i.getY())
+                    self.o_centers.append(Point(i.getX(), i.getY()))
+                self.checker()
+                drawn=True
         if drawn:
-            self.o()
+            self.o_x(n%2)
         else:
-            self.x()
-    def o(self):
-        drawn=False
-        clickpoint = self.win.getMouse()
-        for i in self.box_centers:
-            if clickpoint.getY() < i.getY() + 50 and clickpoint.getX() < i.getX() + 50 and clickpoint.getY() > i.getY() - 50 and clickpoint.getX() > i.getX() - 50:
-                    text = Visual(i.getX(), i.getY()).o_text
-                    self.box_centers.remove(i)
-                    self.o_centers.append(text.getAnchor())
-                    text.setSize(35)
-                    text.setFill('white')
-                    text.draw(self.win)
-                    self.checker()
-                    drawn = True
-        if drawn:
-            self.x()
-        else:
-            self.o()
+            self.o_x(n)
 
     def checker(self):
         for i in self.x_centers:
@@ -202,7 +186,6 @@ class Game():
             self.o_centers = []
             self.x_centers = []
             self.starter()
-            #self.o()
             self.text = None
 
 
